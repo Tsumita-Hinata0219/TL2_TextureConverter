@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+#include "../../Externals/DirectXTex/DirectXTex.h"
+
 
 /* テクスチャコンバータクラス */
 class TextureConverter {
@@ -24,7 +26,6 @@ public:
 	/// <param name="filePath"> ファイルパス </param>
 	void ConvertTextureWIC_To_DDS(const std::string& filePath);
 
-
 	
 private:
 
@@ -40,6 +41,21 @@ private:
 	/// <param name="mString"> マルチバイト文字列 </param>
 	/// <returns> ワイド文字列 </returns>
 	static std::wstring ConvertMultiByteStringToWideString(const std::string& mString);
+
+
+private:
+
+	// 画像の情報
+	DirectX::TexMetadata metaData_;
+	// 画像のイメージコンテナ
+	DirectX::ScratchImage scratchImage_;
+
+	// ディレクトリ
+	std::wstring directoryPath_;
+	// ファイル
+	std::wstring fileName_;
+	// ファイル拡張子
+	std::wstring fileExt_;
 
 };
 

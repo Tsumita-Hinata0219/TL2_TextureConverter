@@ -1,5 +1,6 @@
 #include "TextureConverter.h"
-#include <Windows.h>
+
+
 
 /// <summary>
 /// テクスチャをWICからDDSに変換する
@@ -24,9 +25,8 @@ void TextureConverter::LoadWICTextureFromFile(const std::string& filePath)
 	std::wstring wFilePath = ConvertMultiByteStringToWideString(filePath);
 
 	// ───── 2 テクスチャを読み込む
-
-
-
+	HRESULT hr = DirectX::LoadFromWICFile(wFilePath.c_str(), DirectX::WIC_FLAGS_NONE, &metaData_, scratchImage_);
+	assert(SUCCEEDED(hr));
 }
 
 
