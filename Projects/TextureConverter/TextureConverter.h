@@ -28,6 +28,12 @@ public:
 	
 private:
 
+	/// <summary>
+	/// テクスチャファイルの読み込み
+	/// </summary>
+	/// <param name="filePath"> ファイルパス </param>
+	void LoadWICTextureFromFile(const std::string& filePath);
+
 
 
 };
