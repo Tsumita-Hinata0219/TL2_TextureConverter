@@ -2,7 +2,6 @@
 #include <cstdlib>
 #include <iostream>
 #include <cassert>
-#include <winnt.h>
 #include <Windows.h>
 
 #include "Projects/TextureConverter/TextureConverter.h"
