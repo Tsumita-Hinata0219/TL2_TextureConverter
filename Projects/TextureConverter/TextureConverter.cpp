@@ -29,9 +29,6 @@ void TextureConverter::LoadWICTextureFromFile(const std::string& filePath)
 
 	// ───── フォルダパスとファイル名を分離する
 	SeparateFilePath(wFilePath);
-
-	// ───── DDSテクスチャとしてファイル書き出し
-	SaveDDSTextureToFile();
 }
 
 
@@ -100,17 +97,55 @@ void TextureConverter::SeparateFilePath(const std::wstring& filePath)
 /// </summary>
 void TextureConverter::SaveDDSTextureToFile()
 {
+	HRESULT hr{};
+	// 上下反転用の ScratchImage を用意
+	DirectX::ScratchImage flippedImage;
+	HRESULT flipResult = DirectX::FlipRotate(
+		*scratchImage_.GetImage(0, 0, 0),
+		DirectX::TEX_FR_FLIP_HORIZONTAL | 
+		DirectX::TEX_FR_FLIP_VERTICAL, // X軸・Y軸両方反転
+		flippedImage);
+	if (SUCCEEDED(hr)) {
+		// イメージとメタデータを、ミップマップ版で置き換える
+		scratchImage_ = std::move(flippedImage);
+		metaData_ = scratchImage_.GetMetadata();
+	}
+
+	// ミップマップ生成
+	DirectX::ScratchImage mipChain;
+	hr = DirectX::GenerateMipMaps(
+		scratchImage_.GetImages(), scratchImage_.GetImageCount(), scratchImage_.GetMetadata(),
+		DirectX::TEX_FILTER_DEFAULT, 
+		0, mipChain);
+	if (SUCCEEDED(hr)) {
+		// イメージとメタデータを、ミップマップ版で置き換える
+		scratchImage_ = std::move(mipChain);
+		metaData_ = scratchImage_.GetMetadata();
+	}
+
+	// 圧縮形式に変換
+	DirectX::ScratchImage converted;
+	hr = DirectX::Compress(scratchImage_.GetImages(), scratchImage_.GetImageCount(), 
+		metaData_, 
+		DXGI_FORMAT_BC7_UNORM_SRGB, 
+		DirectX::TEX_COMPRESS_BC7_QUICK | 
+		DirectX::TEX_COMPRESS_SRGB_OUT | 
+		DirectX::TEX_COMPRESS_PARALLEL, 
+		1.0f, converted);
+	if (SUCCEEDED(hr)) {
+		scratchImage_ = std::move(converted);
+		metaData_ = scratchImage_.GetMetadata();
+	}
+
 	// 読み込んだテクスチャをSRGBとして扱う
 	metaData_.format = DirectX::MakeSRGB(metaData_.format);
-
-	HRESULT hr{};
 
 	// 出力ファイル名を設定する
 	std::wstring filePath = directoryPath_ + fileName_ + L".dds";
 
 	// DDSファイル書き出し
 	hr = DirectX::SaveToDDSFile(
-		scratchImage_.GetImages(), scratchImage_.GetImageCount(), 
+		scratchImage_.GetImages(), scratchImage_.GetImageCount(),
 		metaData_, DirectX::DDS_FLAGS_NONE, filePath.c_str());
 	assert(SUCCEEDED(hr));
 }
