@@ -29,9 +29,6 @@ void TextureConverter::LoadWICTextureFromFile(const std::string& filePath)
 
 	// ───── フォルダパスとファイル名を分離する
 	SeparateFilePath(wFilePath);
-
-	// ───── DDSテクスチャとしてファイル書き出し
-	SaveDDSTextureToFile();
 }
 
 
@@ -108,9 +105,17 @@ void TextureConverter::SaveDDSTextureToFile()
 	// 出力ファイル名を設定する
 	std::wstring filePath = directoryPath_ + fileName_ + L".dds";
 
+	// 上下反転用の ScratchImage を用意
+	DirectX::ScratchImage flippedImage;
+	HRESULT flipResult = DirectX::FlipRotate(
+		*scratchImage_.GetImage(0, 0, 0),
+		DirectX::TEX_FR_FLIP_HORIZONTAL | DirectX::TEX_FR_FLIP_VERTICAL, // X軸・Y軸両方反転
+		flippedImage);
+	assert(SUCCEEDED(flipResult));
+
 	// DDSファイル書き出し
 	hr = DirectX::SaveToDDSFile(
-		scratchImage_.GetImages(), scratchImage_.GetImageCount(), 
+		flippedImage.GetImages(), flippedImage.GetImageCount(),
 		metaData_, DirectX::DDS_FLAGS_NONE, filePath.c_str());
 	assert(SUCCEEDED(hr));
 }
