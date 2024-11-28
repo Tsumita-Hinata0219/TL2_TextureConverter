@@ -1,6 +1,9 @@
 #pragma once
 
 #include <iostream>
+#include <string>
+#include <locale>
+#include <codecvt>
 
 #include "../../Externals/DirectXTex/DirectXTex.h"
 
@@ -41,6 +44,17 @@ private:
 	/// <param name="mString"> マルチバイト文字列 </param>
 	/// <returns> ワイド文字列 </returns>
 	static std::wstring ConvertMultiByteStringToWideString(const std::string& mString);
+
+	/// <summary>
+	/// フォルダパスとファイル名を分離する
+	/// </summary>
+	/// <param name="filePath"></param>
+	void SeparateFilePath(const std::wstring& filePath);
+
+	/// <summary>
+	/// DDSテクスチャとしてファイル書き出し
+	/// </summary>
+	void SaveDDSTextureToFile();
 
 
 private:
