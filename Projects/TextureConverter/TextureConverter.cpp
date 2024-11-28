@@ -125,7 +125,8 @@ void TextureConverter::SaveDDSTextureToFile()
 
 	// à≥èkå`éÆÇ…ïœä∑
 	DirectX::ScratchImage converted;
-	hr = DirectX::Compress(scratchImage_.GetImages(), scratchImage_.GetImageCount(), 
+	hr = DirectX::Compress(
+		scratchImage_.GetImages(), scratchImage_.GetImageCount(), 
 		metaData_, 
 		DXGI_FORMAT_BC7_UNORM_SRGB, 
 		DirectX::TEX_COMPRESS_BC7_QUICK | 
