@@ -36,8 +36,13 @@ int main(int argc, char* argv[]) {
 	// テクスチャコンバータクラスのインスタンス
 	std::unique_ptr<TextureConverter> texConverter =
 		std::make_unique<TextureConverter>();
+
+	// オプション数
+	int numOptions = argc - NumArgment;
+	// オプション配列(ダブルポインタ)
+	char** options = argv + NumArgment;
 	// テクスチャ変換
-	texConverter->ConvertTextureWIC_To_DDS(argv[kFilePath]);
+	texConverter->ConvertTextureWIC_To_DDS(argv[kFilePath], numOptions, options);
 
 	// COM ライブラリの終了
 	CoUninitialize();

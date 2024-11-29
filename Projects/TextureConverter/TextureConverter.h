@@ -29,7 +29,7 @@ public:
 	/// テクスチャをWICからDDSに変換する
 	/// </summary>
 	/// <param name="filePath"> ファイルパス </param>
-	void ConvertTextureWIC_To_DDS(const std::string& filePath);
+	void ConvertTextureWIC_To_DDS(const std::string& filePath, int numOptions = 0, char* options[] = nullptr);
 
 	/// <summary>
 	/// 使用方法を出力する(表示)する
@@ -61,22 +61,22 @@ private:
 	/// <summary>
 	/// DDSテクスチャとしてファイル書き出し
 	/// </summary>
-	void SaveDDSTextureToFile(const std::wstring& outputDirectory);
+	void SaveDDSTextureToFile(int numOptions, char* options[], const std::wstring& outputDirectory);
 
 
 private:
 
 	// 画像の情報
-	DirectX::TexMetadata metaData_;
+	DirectX::TexMetadata metaData_{};
 	// 画像のイメージコンテナ
-	DirectX::ScratchImage scratchImage_;
+	DirectX::ScratchImage scratchImage_{};
 
 	// ディレクトリ
-	std::wstring directoryPath_;
+	std::wstring directoryPath_{};
 	// ファイル
-	std::wstring fileName_;
+	std::wstring fileName_{};
 	// ファイル拡張子
-	std::wstring fileExt_;
+	std::wstring fileExt_{};
 
 };
 
