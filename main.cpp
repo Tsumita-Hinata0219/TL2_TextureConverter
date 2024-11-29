@@ -38,8 +38,9 @@ int main(int argc, char* argv[]) {
 	}
 	else {
 		cout << "ファイルを指定してください" << endl;
+		system(PAUSE); // 閉じる前にポーズしておく
 	}
 
-	system(PAUSE); // 閉じる前にポーズしておく
+	//system(PAUSE); // 閉じる前にポーズしておく
 	return 0;
 }

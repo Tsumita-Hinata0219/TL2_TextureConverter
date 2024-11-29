@@ -4,6 +4,8 @@
 #include <string>
 #include <locale>
 #include <codecvt>
+#include <filesystem>
+#include <Windows.h>
 
 #include "../../Externals/DirectXTex/DirectXTex.h"
 
@@ -54,7 +56,7 @@ private:
 	/// <summary>
 	/// DDSテクスチャとしてファイル書き出し
 	/// </summary>
-	void SaveDDSTextureToFile();
+	void SaveDDSTextureToFile(const std::wstring& outputDirectory);
 
 
 private:
