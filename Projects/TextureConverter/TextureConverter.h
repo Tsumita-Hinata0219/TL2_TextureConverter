@@ -26,24 +26,30 @@ public:
 	~TextureConverter() = default;
 
 	/// <summary>
+	/// 使用方法を出力する(表示)する
+	/// </summary>
+	static void OutputUsage();
+
+	/// <summary>
 	/// テクスチャをWICからDDSに変換する
 	/// </summary>
 	/// <param name="filePath"> ファイルパス </param>
 	void ConvertTextureWIC_To_DDS(const std::string& filePath, int numOptions = 0, char* options[] = nullptr);
 
-	/// <summary>
-	/// 使用方法を出力する(表示)する
-	/// </summary>
-	static void OutputUsage();
-
 	
 private:
+
+	/// <summary>
+	/// ワイド文字列への変換と分離
+	/// </summary>
+	/// <param name="filePath"></param>
+	void ConvertAndSeparateFilePath(const std::string& filePath);
 
 	/// <summary>
 	/// テクスチャファイルの読み込み
 	/// </summary>
 	/// <param name="filePath"> ファイルパス </param>
-	void LoadWICTextureFromFile(const std::string& filePath);
+	void LoadWICTextureFromFile();
 
 	/// <summary>
 	/// マルチバイト文字列をワイド文字列に変換
@@ -56,7 +62,12 @@ private:
 	/// フォルダパスとファイル名を分離する
 	/// </summary>
 	/// <param name="filePath"></param>
-	void SeparateFilePath(const std::wstring& filePath);
+	void SeparateFilePath();
+
+	/// <summary>
+	/// 分離されたパス情報を出力
+	/// </summary>
+	void OutputSeparatedPathInfo();
 
 	/// <summary>
 	/// DDSテクスチャとしてファイル書き出し
@@ -71,6 +82,8 @@ private:
 	// 画像のイメージコンテナ
 	DirectX::ScratchImage scratchImage_{};
 
+	// ファイルパス
+	std::wstring wFilePath_{};
 	// ディレクトリ
 	std::wstring directoryPath_{};
 	// ファイル
