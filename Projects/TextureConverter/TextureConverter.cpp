@@ -6,7 +6,7 @@
 /// <summary>
 /// テクスチャをWICからDDSに変換する
 /// </summary>
-void TextureConverter::ConvertTextureWIC_To_DDS(const std::string& filePath)
+void TextureConverter::ConvertTextureWIC_To_DDS(const std::string& filePath, int numOptions, char* options[])
 {
 	// ───── exeのディレクトリを取得する ─────
 	wchar_t exePath[MAX_PATH];
@@ -25,7 +25,19 @@ void TextureConverter::ConvertTextureWIC_To_DDS(const std::string& filePath)
 	LoadWICTextureFromFile(filePath);
 
 	// ───── 2 DDS形式に変換して書き出す
-	SaveDDSTextureToFile(outputDirectory);
+	SaveDDSTextureToFile(numOptions, options, outputDirectory);
+}
+
+
+/// <summary>
+/// 使用方法を出力する(表示)する
+/// </summary>
+void TextureConverter::OutputUsage()
+{
+	std::cout << "画像ファイルをWIC形式からDDS形式に変換します" << std::endl;
+	std::cout << "ファイルを指定してください" << std::endl;
+	std::cout << "TextureConverter [ドライブ:][パス][ファイル名]" << std::endl;
+	std::cout << std::endl;
 }
 
 
@@ -109,7 +121,7 @@ void TextureConverter::SeparateFilePath(const std::wstring& filePath)
 /// <summary>
 /// DDSテクスチャとしてファイル書き出し
 /// </summary>
-void TextureConverter::SaveDDSTextureToFile(const std::wstring& outputDirectory)
+void TextureConverter::SaveDDSTextureToFile(int numOptions, char* options[], const std::wstring& outputDirectory)
 {
 	HRESULT hr{};
 	// 上下反転用の ScratchImage を用意
@@ -126,11 +138,23 @@ void TextureConverter::SaveDDSTextureToFile(const std::wstring& outputDirectory)
 	}
 
 	// ミップマップ生成
+	// ミップマップレベル指定を検索
+	size_t mipLevel = 0;
+	for (int i = 0; i < numOptions; i++) {
+		if (std::string(options[i]) == "-ml") {
+			// ミップレベル指定
+			mipLevel = std::stoi(options[i + 1]);
+			break;
+		}
+	}
 	DirectX::ScratchImage mipChain;
 	hr = DirectX::GenerateMipMaps(
-		scratchImage_.GetImages(), scratchImage_.GetImageCount(), scratchImage_.GetMetadata(),
+		scratchImage_.GetImages(), 
+		scratchImage_.GetImageCount(), 
+		scratchImage_.GetMetadata(),
 		DirectX::TEX_FILTER_DEFAULT, 
-		0, mipChain);
+		mipLevel, 
+		mipChain);
 	if (SUCCEEDED(hr)) {
 		// イメージとメタデータを、ミップマップ版で置き換える
 		scratchImage_ = std::move(mipChain);
