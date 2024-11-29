@@ -1,5 +1,6 @@
 #include "TextureConverter.h"
-
+#include <filesystem>
+#include <Windows.h>
 
 
 /// <summary>
@@ -7,11 +8,24 @@
 /// </summary>
 void TextureConverter::ConvertTextureWIC_To_DDS(const std::string& filePath)
 {
+	// ───── exeのディレクトリを取得する ─────
+	wchar_t exePath[MAX_PATH];
+	GetModuleFileNameW(nullptr, exePath, MAX_PATH); // exeファイルの絶対パスを取得
+	std::filesystem::path exeDirectory = std::filesystem::path(exePath).remove_filename();
+	// 出力ディレクトリ名を設定 (exeと同じディレクトリ内に"Converted"フォルダを作成)
+	std::wstring outputDirectory = exeDirectory / L"Converted";
+	// 出力ディレクトリを作成
+	namespace fs = std::filesystem;
+	if (!fs::exists(outputDirectory)) {
+		fs::create_directories(outputDirectory); // ディレクトリを再帰的に作成
+	}
+
+
 	// ───── 1 テクスチャを読み込む
 	LoadWICTextureFromFile(filePath);
 
 	// ───── 2 DDS形式に変換して書き出す
-	SaveDDSTextureToFile();
+	SaveDDSTextureToFile(outputDirectory);
 }
 
 
@@ -95,7 +109,7 @@ void TextureConverter::SeparateFilePath(const std::wstring& filePath)
 /// <summary>
 /// DDSテクスチャとしてファイル書き出し
 /// </summary>
-void TextureConverter::SaveDDSTextureToFile()
+void TextureConverter::SaveDDSTextureToFile(const std::wstring& outputDirectory)
 {
 	HRESULT hr{};
 	// 上下反転用の ScratchImage を用意
@@ -125,7 +139,8 @@ void TextureConverter::SaveDDSTextureToFile()
 
 	// 圧縮形式に変換
 	DirectX::ScratchImage converted;
-	hr = DirectX::Compress(scratchImage_.GetImages(), scratchImage_.GetImageCount(), 
+	hr = DirectX::Compress(
+		scratchImage_.GetImages(), scratchImage_.GetImageCount(), 
 		metaData_, 
 		DXGI_FORMAT_BC7_UNORM_SRGB, 
 		DirectX::TEX_COMPRESS_BC7_QUICK | 
@@ -141,7 +156,7 @@ void TextureConverter::SaveDDSTextureToFile()
 	metaData_.format = DirectX::MakeSRGB(metaData_.format);
 
 	// 出力ファイル名を設定する
-	std::wstring filePath = directoryPath_ + fileName_ + L".dds";
+	std::wstring filePath = outputDirectory + L"\\" + fileName_ + L".dds";
 
 	// DDSファイル書き出し
 	hr = DirectX::SaveToDDSFile(
