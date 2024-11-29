@@ -30,6 +30,18 @@ void TextureConverter::ConvertTextureWIC_To_DDS(const std::string& filePath)
 
 
 /// <summary>
+/// 使用方法を出力する(表示)する
+/// </summary>
+void TextureConverter::OutputUsage()
+{
+	std::cout << "画像ファイルをWIC形式からDDS形式に変換します" << std::endl;
+	std::cout << "ファイルを指定してください" << std::endl;
+	std::cout << "TextureConverter [ドライブ:][パス][ファイル名]" << std::endl;
+	std::cout << std::endl;
+}
+
+
+/// <summary>
 /// テクスチャファイルの読み込み
 /// </summary>
 void TextureConverter::LoadWICTextureFromFile(const std::string& filePath)

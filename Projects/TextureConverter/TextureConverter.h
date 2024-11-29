@@ -31,6 +31,11 @@ public:
 	/// <param name="filePath"> ファイルパス </param>
 	void ConvertTextureWIC_To_DDS(const std::string& filePath);
 
+	/// <summary>
+	/// 使用方法を出力する(表示)する
+	/// </summary>
+	static void OutputUsage();
+
 	
 private:
 

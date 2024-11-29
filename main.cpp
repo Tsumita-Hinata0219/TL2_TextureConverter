@@ -21,26 +21,26 @@ enum Argment {
 
 int main(int argc, char* argv[]) {
 
-	// ファイルが指定されていたらコンバート処理に入る
-	if (argc >= NumArgment) {
-		// COM ライブラリの初期化
-		HRESULT hr = CoInitializeEx(nullptr, COINITBASE_MULTITHREADED);
-		assert(SUCCEEDED(hr));
-
-		// テクスチャコンバータクラスのインスタンス
-		std::unique_ptr<TextureConverter> texConverter =
-			std::make_unique<TextureConverter>();
-		// テクスチャ変換
-		texConverter->ConvertTextureWIC_To_DDS(argv[kFilePath]);
-
-		// COM ライブラリの終了
-		CoUninitialize();
-	}
-	else {
-		cout << "ファイルを指定してください" << endl;
+	// ───────── 引数指定なしなので、
+	if (argc < NumArgment) {
+		TextureConverter::OutputUsage();
 		system(PAUSE); // 閉じる前にポーズしておく
+		return 0;
 	}
 
-	//system(PAUSE); // 閉じる前にポーズしておく
+	// ───────── 引数が指定されているのでコンバート処理に入る
+	// COM ライブラリの初期化
+	HRESULT hr = CoInitializeEx(nullptr, COINITBASE_MULTITHREADED);
+	assert(SUCCEEDED(hr));
+
+	// テクスチャコンバータクラスのインスタンス
+	std::unique_ptr<TextureConverter> texConverter =
+		std::make_unique<TextureConverter>();
+	// テクスチャ変換
+	texConverter->ConvertTextureWIC_To_DDS(argv[kFilePath]);
+
+	// COM ライブラリの終了
+	CoUninitialize();
+
 	return 0;
 }
