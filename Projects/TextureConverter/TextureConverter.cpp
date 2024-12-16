@@ -176,17 +176,17 @@ void TextureConverter::SaveDDSTextureToFile(int numOptions, char* options[], con
 {
 	HRESULT hr{};
 	// 上下反転用の ScratchImage を用意
-	DirectX::ScratchImage flippedImage;
-	HRESULT flipResult = DirectX::FlipRotate(
-		*scratchImage_.GetImage(0, 0, 0),
-		DirectX::TEX_FR_FLIP_HORIZONTAL | 
-		DirectX::TEX_FR_FLIP_VERTICAL, // X軸・Y軸両方反転
-		flippedImage);
-	if (SUCCEEDED(hr)) {
-		// イメージとメタデータを、ミップマップ版で置き換える
-		scratchImage_ = move(flippedImage);
-		metaData_ = scratchImage_.GetMetadata();
-	}
+	//DirectX::ScratchImage flippedImage;
+	//HRESULT flipResult = DirectX::FlipRotate(
+	//	*scratchImage_.GetImage(0, 0, 0),
+	//	DirectX::TEX_FR_FLIP_HORIZONTAL | 
+	//	DirectX::TEX_FR_FLIP_VERTICAL, // X軸・Y軸両方反転
+	//	flippedImage);
+	//if (SUCCEEDED(hr)) {
+	//	// イメージとメタデータを、ミップマップ版で置き換える
+	//	scratchImage_ = move(flippedImage);
+	//	metaData_ = scratchImage_.GetMetadata();
+	//}
 
 	// ミップマップ生成
 	// ミップマップレベル指定を検索
